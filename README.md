@@ -7,10 +7,11 @@
 
 | Champ | Détail |
 |---|---|
+| **Membres** | Sahraoui Youness · Achraf Abdelfadel · Ouzine Anas |
 | **Sujet** | Prédiction de la consommation énergétique des bâtiments |
 | **Type de problème** | Régression supervisée |
 | **Dataset** | [Building Energy Consumption — Kaggle](https://www.kaggle.com/code/varat7v2/building-energy-consumption) |
-| **Outils** | Python, VSCode, Git/GitHub |
+| **Outils** | Python 3.13, VSCode, Git/GitHub |
 | **Librairies** | pandas, numpy, matplotlib, seaborn, scikit-learn, joblib |
 
 ---
@@ -22,7 +23,7 @@ projet-kaiss/
 │
 ├── buildingdata.csv          # Dataset brut
 ├── energy_prediction.py      # Script principal (preprocessing + modélisation)
-├── best_model.pkl            # Modèle sauvegardé (Random Forest ou autre)
+├── best_model.pkl            # Modèle sauvegardé (Linear Regression)
 ├── scaler.pkl                # Scaler sauvegardé pour la normalisation
 │
 ├── distribution_cible.png    # Graphique : distribution de la variable cible
@@ -110,7 +111,7 @@ df = df.drop(columns=['Date', 'Id'])
 ```python
 df.isnull().sum().sum()  # Résultat : 0
 ```
-Aucune valeur manquante détectée — aucun remplissage nécessaire.
+✅ Aucune valeur manquante — aucun remplissage nécessaire.
 
 **Séparation features / variable cible**
 ```python
@@ -123,7 +124,7 @@ y = df['Total electricity consumption']
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 ```
-La normalisation centre chaque feature à une moyenne de 0 et un écart-type de 1. Elle est indispensable pour des algorithmes sensibles aux échelles (notamment la régression linéaire et le KNN).
+La normalisation centre chaque feature à une moyenne de 0 et un écart-type de 1. Indispensable pour les algorithmes sensibles aux échelles comme la Régression Linéaire.
 
 **Découpage Train / Test**
 ```python
@@ -131,6 +132,7 @@ X_train, X_test, y_train, y_test = train_test_split(
     X_scaled, y, test_size=0.2, random_state=42
 )
 ```
+
 | Ensemble | Taille |
 |---|---|
 | Entraînement | 818 lignes (80%) |
@@ -144,12 +146,12 @@ X_train, X_test, y_train, y_test = train_test_split(
 Le graphique `distribution_cible.png` montre la répartition des valeurs de consommation électrique. Cela permet de détecter d'éventuels outliers et de comprendre si la distribution est normale ou asymétrique.
 
 ### Matrice de corrélation
-Le graphique `heatmap_correlation.png` affiche les corrélations entre toutes les variables. Les features fortement corrélées à `Total electricity consumption` sont les plus utiles pour la prédiction.
+Le graphique `heatmap_correlation.png` affiche les corrélations entre toutes les variables.
 
-**Interprétation attendue :**
-- Les features de température (Air, Operative, Dry-Bulb) sont généralement corrélées à la consommation
+**Interprétations clés :**
+- Les features de température (Air, Operative, Dry-Bulb) sont corrélées à la consommation
 - Les gains solaires et l'occupation influencent directement la demande énergétique
-- Des corrélations très élevées entre features (multicolinéarité) peuvent indiquer des features redondantes
+- Certaines features très corrélées entre elles (ex. `Total Cooling`, `Zone Sensible Cooling`, `Sensible Cooling`) indiquent une **multicolinéarité** — ce qui explique en partie les résultats exceptionnels de la régression linéaire
 
 ---
 
@@ -159,18 +161,18 @@ Trois algorithmes de régression ont été entraînés et comparés :
 
 ### 1. Régression Linéaire (`LinearRegression`)
 - **Principe** : modélise une relation linéaire entre les features et la cible
-- **Avantage** : simple, rapide, interprétable
-- **Limite** : ne capte pas les relations non-linéaires
+- **Avantage** : simple, rapide, très interprétable
+- **Résultat** : R² = 1.0000 — la relation est quasi-parfaitement linéaire dans ce dataset
 
 ### 2. Arbre de Décision (`DecisionTreeRegressor`)
 - **Principe** : divise récursivement les données selon des seuils sur les features
-- **Avantage** : interprétable, capte la non-linéarité
-- **Limite** : tendance à l'overfitting sur les données d'entraînement
+- **Avantage** : interprétable visuellement, capte les non-linéarités
+- **Résultat** : R² = 0.9983 — très bon, légèrement inférieur
 
-### 3. Random Forest (`RandomForestRegressor`)
-- **Principe** : ensemble de 100 arbres de décision, agrège leurs prédictions
-- **Avantage** : robuste, meilleure généralisation, moins d'overfitting
-- **Limite** : moins interprétable, plus lent à entraîner
+### 3. Random Forest (`RandomForestRegressor`, 100 arbres)
+- **Principe** : ensemble de 100 arbres de décision indépendants, agrège leurs prédictions
+- **Avantage** : robuste, meilleure généralisation, résistant à l'overfitting
+- **Résultat** : R² = 0.9995 — excellent
 
 ```python
 models = {
@@ -186,52 +188,77 @@ models = {
 
 ### Métriques utilisées
 
-| Métrique | Formule | Interprétation |
-|---|---|---|
-| **RMSE** | √(MSE) | Erreur moyenne en unités de la cible — plus bas = mieux |
-| **MAE** | moyenne(|y - ŷ|) | Erreur absolue moyenne — robuste aux outliers |
-| **R²** | 1 - SS_res/SS_tot | Part de variance expliquée — plus proche de 1 = mieux |
+| Métrique | Interprétation |
+|---|---|
+| **RMSE** | Erreur quadratique moyenne — plus bas = mieux |
+| **MAE** | Erreur absolue moyenne — robuste aux outliers |
+| **R²** | Part de variance expliquée — plus proche de 1 = mieux |
 
-### Résultats obtenus
-
-> *(Les valeurs seront remplies après exécution du script)*
+### ✅ Résultats obtenus
 
 | Modèle | RMSE | MAE | R² |
 |---|---|---|---|
-| Linear Regression | — | — | — |
-| Decision Tree | — | — | — |
-| Random Forest | — | — | — |
+| 🥇 **Linear Regression** | **0.0099** | **0.0029** | **1.0000** |
+| 🥈 Random Forest | 0.4415 | 0.1650 | 0.9995 |
+| 🥉 Decision Tree | 0.8218 | 0.2609 | 0.9983 |
 
 Le graphique `comparaison_modeles.png` visualise ces métriques côte à côte.
 
-### Critère de sélection du meilleur modèle
-Le modèle avec le **R² le plus élevé** est automatiquement sélectionné et sauvegardé :
-```python
-best_model_name = max(results, key=lambda k: results[k]["R²"])
-joblib.dump(best_model, "best_model.pkl")
-joblib.dump(scaler, "scaler.pkl")
+**Meilleur modèle sélectionné automatiquement :**
 ```
+✅ Meilleur modèle : Linear Regression (R² = 1.0000)
+   Sauvegardé dans best_model.pkl
+```
+
+---
+
+## 🔍 Étape 7 — Interprétation des Résultats
+
+### Analyse des performances
+
+**Régression Linéaire — R² = 1.0000**
+
+Un R² de 1.0000 signifie que le modèle explique 100% de la variance de la variable cible avec une erreur RMSE de seulement 0.0099. Ce résultat remarquable indique que la relation entre les features et `Total electricity consumption` est **parfaitement linéaire** dans ce dataset.
+
+Deux explications probables :
+1. **Le dataset est issu d'une simulation** (logiciel comme EnergyPlus ou IDA-ICE), ce qui produit des données sans bruit aléatoire, contrairement à des relevés réels de capteurs
+2. **Multicolinéarité** : certaines features (`Total Cooling`, `Sensible Cooling`, `Zone Sensible Cooling`) sont des composantes directes de la consommation totale, rendant la prédiction triviale pour un modèle linéaire
+
+> ⚠️ **Note importante** : dans un contexte avec des données réelles de terrain (capteurs, compteurs), un R² aussi proche de 1 serait un signal de **data leakage** à investiguer. Ici, c'est cohérent avec l'origine simulée et déterministe des données.
+
+**Random Forest — R² = 0.9995**
+
+Très proche de la perfection. En pratique sur des données réelles bruitées, ce modèle serait le plus recommandé pour sa robustesse.
+
+**Decision Tree — R² = 0.9983**
+
+Excellent résultat, mais légèrement inférieur aux deux autres. Un arbre sans élagage (pruning) peut surapprendre sur les données d'entraînement, ce que confirme son RMSE plus élevé en test (0.8218).
+
+### Recommandation en contexte réel
+En production avec des données de capteurs (bruit, valeurs aberrantes, données manquantes), la hiérarchie serait probablement : **Random Forest > Decision Tree > Linear Regression**.
 
 ---
 
 ## 💾 Sauvegarde du Modèle
 
-Le meilleur modèle et le scaler sont sérialisés avec `joblib` pour une réutilisation future (notamment lors du déploiement) :
+```python
+joblib.dump(best_model, "best_model.pkl")  # modèle entraîné
+joblib.dump(scaler, "scaler.pkl")           # normalisation des nouvelles entrées
+```
 
-- `best_model.pkl` → le modèle entraîné
-- `scaler.pkl` → le scaler pour transformer les nouvelles entrées de la même façon
+Ces fichiers permettent de réutiliser le modèle sans réentraînement, notamment pour le déploiement Streamlit.
 
 ---
 
-## 🚀 Étape 7 (Bonus) — Déploiement avec Streamlit
+## 🚀 Étape 8 (Bonus) — Déploiement avec Streamlit
 
-> *(En cours — à venir)*
+> *(En cours)*
 
-Un fichier `app.py` sera créé pour permettre à n'importe quel utilisateur de saisir les caractéristiques d'un bâtiment et d'obtenir une prédiction de sa consommation électrique via une interface web simple.
+Un fichier `app.py` sera créé pour permettre à un utilisateur de saisir les caractéristiques d'un bâtiment et d'obtenir instantanément une prédiction de consommation électrique.
 
 **Technologies prévues :**
 - [Streamlit](https://streamlit.io) pour l'interface utilisateur
-- [Streamlit Community Cloud](https://streamlit.io/cloud) pour l'hébergement gratuit (connexion au repo GitHub)
+- [Streamlit Community Cloud](https://streamlit.io/cloud) pour l'hébergement gratuit, connecté directement au repo GitHub
 
 ---
 
@@ -242,15 +269,19 @@ Un fichier `app.py` sera créé pour permettre à n'importe quel utilisateur de 
 pip install pandas numpy matplotlib seaborn scikit-learn joblib
 ```
 
-### Lancer le script principal
+### Lancer le script
 ```bash
 python energy_prediction.py
 ```
 
-### Résultats générés
-- Affichage des métriques dans le terminal
-- 3 graphiques sauvegardés automatiquement (`.png`)
-- Modèle sauvegardé (`best_model.pkl`)
+### Sorties générées
+| Fichier | Description |
+|---|---|
+| `distribution_cible.png` | Histogramme de la variable cible |
+| `heatmap_correlation.png` | Matrice de corrélation entre toutes les variables |
+| `comparaison_modeles.png` | Comparaison RMSE / MAE / R² des 3 modèles |
+| `best_model.pkl` | Modèle sauvegardé |
+| `scaler.pkl` | Scaler sauvegardé |
 
 ---
 
@@ -262,15 +293,17 @@ python energy_prediction.py
 | 2. Collecte des données | ✅ Terminé |
 | 3. Prétraitement | ✅ Terminé |
 | 4. Exploration & Visualisation | ✅ Terminé |
-| 5. Modélisation | ✅ Terminé |
-| 6. Évaluation | ✅ Terminé |
-| 7. Interprétation & Conclusion | 🔄 En cours |
+| 5. Modélisation (3 algorithmes) | ✅ Terminé |
+| 6. Évaluation des modèles | ✅ Terminé |
+| 7. Interprétation & Conclusion | ✅ Terminé |
 | 8. Déploiement Streamlit (bonus) | ⏳ À faire |
 
 ---
 
 ## 📝 Conclusion
 
-*(À compléter après analyse des résultats)*
+Ce projet applique une démarche complète de Data Mining sur un dataset de consommation énergétique de bâtiments (1023 observations, 23 features après nettoyage).
 
-Ce projet applique une démarche complète de Data Mining sur un dataset de consommation énergétique de bâtiments. En comparant plusieurs algorithmes de régression, nous identifions le modèle le plus performant et le rendons réutilisable via une sauvegarde `.pkl`. L'objectif final est de déployer ce modèle dans une application web accessible.
+Les trois modèles de régression testés obtiennent d'excellentes performances (R² > 0.998), ce qui reflète la nature simulée et déterministe du dataset. La **Régression Linéaire** se distingue avec un R² parfait de 1.0000 et un RMSE de 0.0099, confirmant que la consommation électrique est une combinaison quasi-linéaire des variables physiques du bâtiment dans ce jeu de données.
+
+En conditions réelles avec des données bruitées, le **Random Forest** (R² = 0.9995) serait à privilégier pour sa robustesse. La prochaine étape est le déploiement via Streamlit pour rendre le modèle accessible à des utilisateurs non-techniques.
