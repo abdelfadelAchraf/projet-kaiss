@@ -1,0 +1,41 @@
+PS C:\Users\youness\Desktop\projet-kaiss> & C:/Users/youness/AppData/Local/Programs/Python/Python313/python.exe c:/Users/youness/Desktop/projet-kaiss/energy_prediction.py
+Shape: (1023, 26)
+
+Valeurs manquantes:
+ 0 au total
+
+Features utilisées: ['Air Temperature', 'Radiant Temperature', 'Operative Temperature', 'Outside Dry-Bulb Temperature', 'Glazing', 'Walls', 'Ceilings (int)', 'Floors (int)', 'Ground Floors', 'Partitions (int)', 'Roofs', 'External Infiltration', 'External Vent.', 'General Lighting', 'Computer + Equip', 'Occupancy', 'Solar Gains Interior Windows', 'Solar Gains Exterior Windows', 'Zone Sensible Heating', 'Zone Sensible Cooling', 'Sensible Cooling', 'Total Cooling', 'Mech Vent + Nat Vent + Infiltration']
+Variable cible: Total electricity consumption
+
+Train: 818 lignes | Test: 205 lignes
+
+Linear Regression
+  RMSE : 0.0099
+  MAE  : 0.0029
+  R²   : 1.0000
+
+Decision Tree
+  RMSE : 0.8218
+  MAE  : 0.2609
+  R²   : 0.9983
+
+Random Forest
+  RMSE : 0.4415
+  MAE  : 0.1650
+  R²   : 0.9995
+
+
+Résumé des performances:
+                        RMSE       MAE        R²
+Linear Regression  0.009862  0.002898  1.000000
+Decision Tree      0.821845  0.260927  0.998256
+Random Forest      0.441454  0.164986  0.999497
+c:\Users\youness\Desktop\projet-kaiss\energy_prediction.py:100: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+  axes[i].set_xticklabels(results_df.index, rotation=15)
+c:\Users\youness\Desktop\projet-kaiss\energy_prediction.py:100: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+  axes[i].set_xticklabels(results_df.index, rotation=15)
+c:\Users\youness\Desktop\projet-kaiss\energy_prediction.py:100: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+  axes[i].set_xticklabels(results_df.index, rotation=15)
+
+✅ Meilleur modèle : Linear Regression (R² = 1.0000)
+Modèle sauvegardé dans best_model.pkl
