@@ -1,4 +1,4 @@
-# 🏢 Prédiction de la Consommation Énergétique des Bâtiments
+     # 🏢 Prédiction de la Consommation Énergétique des Bâtiments
 ### Projet Data Mining — Python & Machine Learning
 
 ---
@@ -247,20 +247,6 @@ joblib.dump(scaler, "scaler.pkl")           # normalisation des nouvelles entré
 ```
 
 Ces fichiers permettent de réutiliser le modèle sans réentraînement, notamment pour le déploiement Streamlit.
-
----
-
-## 🚀 Étape 8 — Déploiement avec Streamlit
-
-L'application a été préparée pour être déployée sur **Streamlit Community Cloud**.
-
-**Guide complet :** ➡️ [Consulter le Guide de Déploiement (DEPLOYMENT.md)](./DEPLOYMENT.md)
-
-**Aperçu technique :**
-- **Interface** : [Streamlit](https://streamlit.io)
-- **Hébergement** : Streamlit Community Cloud (Gratuit)
-- **Fichier principal** : `src/app.py`
-- **Dépendances** : `requirements.txt`
 
 ---
 
