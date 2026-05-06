@@ -250,15 +250,17 @@ Ces fichiers permettent de réutiliser le modèle sans réentraînement, notamme
 
 ---
 
-## 🚀 Étape 8 (Bonus) — Déploiement avec Streamlit
+## 🚀 Étape 8 — Déploiement avec Streamlit
 
-> *(En cours)*
+L'application a été préparée pour être déployée sur **Streamlit Community Cloud**.
 
-Un fichier `app.py` sera créé pour permettre à un utilisateur de saisir les caractéristiques d'un bâtiment et d'obtenir instantanément une prédiction de consommation électrique.
+**Guide complet :** ➡️ [Consulter le Guide de Déploiement (DEPLOYMENT.md)](./DEPLOYMENT.md)
 
-**Technologies prévues :**
-- [Streamlit](https://streamlit.io) pour l'interface utilisateur
-- [Streamlit Community Cloud](https://streamlit.io/cloud) pour l'hébergement gratuit, connecté directement au repo GitHub
+**Aperçu technique :**
+- **Interface** : [Streamlit](https://streamlit.io)
+- **Hébergement** : Streamlit Community Cloud (Gratuit)
+- **Fichier principal** : `src/app.py`
+- **Dépendances** : `requirements.txt`
 
 ---
 
@@ -296,7 +298,7 @@ python energy_prediction.py
 | 5. Modélisation (3 algorithmes) | ✅ Terminé |
 | 6. Évaluation des modèles | ✅ Terminé |
 | 7. Interprétation & Conclusion | ✅ Terminé |
-| 8. Déploiement Streamlit (bonus) | ⏳ À faire |
+| 8. Déploiement Streamlit (bonus) | ✅ Terminé |
 
 ---
 
