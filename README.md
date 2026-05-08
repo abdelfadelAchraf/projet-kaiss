@@ -1,4 +1,4 @@
-     # 🏢 Prédiction de la Consommation Énergétique des Bâtiments
+# 🏢 Prédiction de la Consommation Énergétique des Bâtiments
 ### Projet Data Mining — Python & Machine Learning
 
 ---
